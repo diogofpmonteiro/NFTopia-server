@@ -2,14 +2,14 @@ const express = require("express");
 const router = express.Router();
 const User = require("../models/user.model");
 const { isAuthenticated } = require("./../middleware/jwt.middleware");
+const fileUploader = require("../config/cloudinary.config");
 
-
-// GET /api/users/current  - Get current user info
-router.get('/api/users/current', isAuthenticated, async (req, res, next) => {
+// * GET /api/user/  - Get current user info - Tested successfully
+router.get("/api/user/", isAuthenticated, async (req, res, next) => {
   try {
     // If the user is authenticated we can access the JWT payload via req.payload
     // req.payload holds the user info that was encoded in JWT during login.
-  
+
     const currentUser = req.payload;
     const user = await User.findById(currentUser._id);
 
@@ -17,20 +17,23 @@ router.get('/api/users/current', isAuthenticated, async (req, res, next) => {
   } catch (error) {
     next(error);
   }
-})
+});
 
-// PUT /api/users/current  - Update the current user
-router.put('/api/users/current', isAuthenticated, async (req, res, next) => {
+// * PUT /api/user/  - Update the current user - Tested successfully
+router.put("/api/user/", isAuthenticated, async (req, res, next) => {
   try {
     // If the user is authenticated we can access the JWT payload via req.payload
     // req.payload holds the user info that was encoded in JWT during login.
-  
+
     const currentUser = req.payload;
-    const { email, name } = req.body;
+    const { username, profilePictureURL } = req.body;
 
     const updatedUser = await User.findByIdAndUpdate(
       currentUser._id,
-      { email, name },
+      {
+        username,
+        profilePictureURL,
+      },
       { new: true }
     );
 
@@ -38,7 +41,6 @@ router.put('/api/users/current', isAuthenticated, async (req, res, next) => {
   } catch (error) {
     next(error);
   }
-})
-
+});
 
 module.exports = router;
