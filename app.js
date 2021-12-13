@@ -21,8 +21,8 @@ app.use("/", allRoutes);
 const authRoutes = require("./routes/auth.routes");
 app.use("/", authRoutes);
 
-const nftRoutes = require("./routes/nft.routes");
-app.use("/", nftRoutes);
+const productRoutes = require("./routes/product.routes");
+app.use("/", productRoutes);
 
 const cartRoutes = require("./routes/cart.routes");
 app.use("/", cartRoutes);

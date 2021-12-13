@@ -5,11 +5,12 @@ const jwt = require("jsonwebtoken");
 const User = require("../models/user.model");
 
 const { isAuthenticated, isAdmin } = require("./../middleware/jwt.middleware");
+const fileUploader = require("../config/cloudinary.config");
 
 const saltRounds = 10;
 
 // * POST /auth/signup - Tested successfully
-router.post("/auth/signup", async (req, res, next) => {
+router.post("/auth/signup", fileUploader.single("imageURL"), async (req, res, next) => {
   try {
     // Get the data from req.body
     const { username, password, profilePictureURL } = req.body;
@@ -20,14 +21,6 @@ router.post("/auth/signup", async (req, res, next) => {
       return;
     }
 
-    // Validate email and password format
-    // Use regex to validate the email format
-    // const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
-    // if (!emailRegex.test(email)) {
-    //   res.status(400).json({ message: "Provide a valid email address." });
-    //   return;
-    // }
-
     // Use regex to validate the password format
     const passwordRegex = /(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,}/;
     if (!passwordRegex.test(password)) {
@@ -36,9 +29,6 @@ router.post("/auth/signup", async (req, res, next) => {
       });
       return;
     }
-
-    // Check if email is not taken
-    // const foundUser = await User.findOne({ email });
 
     // Check if username is not taken
     const foundUser = await User.findOne({ username });
@@ -102,6 +92,7 @@ router.post("/auth/login", async (req, res, next) => {
         _id: foundUser._id,
         username: foundUser.username,
         profilePictureURL: foundUser.profilePictureURL,
+        role: foundUser.role,
       };
 
       // Create a JWT with the payload
