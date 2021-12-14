@@ -17,4 +17,8 @@ router.post("/api/upload", fileUploader.single("imageURL"), (req, res, next) => 
   res.json({ secure_url: req.file.path });
 });
 
+router.get("/", (req, res, next) => {
+  res.json("All good in here");
+});
+
 module.exports = router;
