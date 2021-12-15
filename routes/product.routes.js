@@ -2,7 +2,6 @@ const express = require("express");
 const mongoose = require("mongoose");
 const router = express.Router();
 const Product = require("../models/product.model");
-const User = require("../models/user.model");
 const { isAuthenticated, isAdmin } = require("../middleware/jwt.middleware");
 const fileUploader = require("../config/cloudinary.config");
 
@@ -55,9 +54,45 @@ router.get("/api/products/:productId", async (req, res, next) => {
 });
 
 // Edit a Product (admin only)
-router.put("/api/products/:productId", isAuthenticated, isAdmin, async (req, res, next) => {});
+router.put("/api/products/:productId", isAuthenticated, fileUploader.single("imageURL"), isAdmin, async (req, res, next) => {
+  try {
+    const { productId } = req.params;
+    const currentUser = req.payload;
+    const { name, description, productImageURL, price } = req.body;
 
-// Delete a product (admin only)
-router.delete("/api/products/:productId", isAuthenticated, isAdmin, async (req, res, next) => {});
+    let newProductImageURL;
+    if (productImageURL) {
+      newProductImageURL = productImageURL;
+    } else {
+      newProductImageURL = currentUser.productImageURL;
+    }
+
+    const newProductInfo = { name, description, productImageURL: newProductImageURL, price };
+
+    const updatedProduct = await Product.findByIdAndUpdate(productId, newProductInfo, { new: true });
+
+    res.status(200).json(updatedProduct);
+  } catch (error) {
+    next(error);
+  }
+});
+
+// * Delete a product (admin only) - Tested successfully
+router.delete("/api/products/:productId", isAuthenticated, isAdmin, async (req, res, next) => {
+  try {
+    const { productId } = req.params;
+
+    if (!mongoose.Types.ObjectId.isValid(productId)) {
+      res.status(400).json({ message: "Invalid object id" });
+      return;
+    }
+
+    await Product.findByIdAndDelete(productId);
+
+    res.status(204).send(); // No Content
+  } catch (error) {
+    res.status(500).json(error);
+  }
+});
 
 module.exports = router;

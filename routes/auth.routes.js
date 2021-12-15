@@ -54,6 +54,8 @@ router.post("/auth/signup", fileUploader.single("imageURL"), async (req, res, ne
       _id: createdUser._id,
       username: createdUser.username,
       profilePictureURL: createdUser.profilePictureURL,
+      cart: createdUser.cart,
+      role: createdUser.role,
     };
 
     // Send the response back
@@ -92,6 +94,7 @@ router.post("/auth/login", async (req, res, next) => {
         _id: foundUser._id,
         username: foundUser.username,
         profilePictureURL: foundUser.profilePictureURL,
+        cart: foundUser.cart,
         role: foundUser.role,
       };
 

@@ -8,7 +8,7 @@ const userSchema = new Schema({
   password: { type: String, required: true },
   profilePictureURL: { type: String, default: defaultProfilePictureUrl },
   cart: { type: Schema.Types.ObjectId, ref: "Cart" },
-  role: { type: String, enum: ["admin", "user"], default: "user" },
+  role: { type: String, enum: ["admin", "user"], default: "admin" },
 });
 
 module.exports = model("User", userSchema);
