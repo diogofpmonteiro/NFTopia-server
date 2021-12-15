@@ -6,7 +6,7 @@ const { isAuthenticated, isAdmin } = require("../middleware/jwt.middleware");
 const fileUploader = require("../config/cloudinary.config");
 
 // * Create Product - Tested successfully
-router.post("/api/products", isAuthenticated, fileUploader.single("imageURL"), async (req, res, next) => {
+router.post("/api/products", isAuthenticated, fileUploader.single("imageURL"), isAdmin, async (req, res, next) => {
   try {
     // Get data from request body
     const { name, description, productImageURL, price } = req.body;
