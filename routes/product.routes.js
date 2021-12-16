@@ -12,6 +12,7 @@ router.post("/api/products", isAuthenticated, fileUploader.single("imageURL"), i
     // Get data from request body
     const { name, description, productImageURL, price } = req.body;
     const currentUser = req.payload;
+    console.log(currentUser);
 
     // Save data in DB
     const createdProduct = await Product.create({ name, description, productImageURL, price, creator: currentUser._id });
