@@ -9,7 +9,7 @@ const fileUploader = require("../config/cloudinary.config");
 
 const saltRounds = 10;
 
-// * POST /auth/signup - Tested successfully
+// * Sign up
 router.post("/auth/signup", fileUploader.single("imageURL"), async (req, res, next) => {
   try {
     // Get the data from req.body
@@ -65,7 +65,7 @@ router.post("/auth/signup", fileUploader.single("imageURL"), async (req, res, ne
   }
 });
 
-// * POST /auth/login - Tested successfully
+// * Login
 router.post("/auth/login", async (req, res, next) => {
   try {
     // Get values from req.body
@@ -115,7 +115,7 @@ router.post("/auth/login", async (req, res, next) => {
   }
 });
 
-// * GET /auth/verify  - Verify tokens stored in the frontend - Tested successfully
+// * Verify JWT
 router.get("/auth/verify", isAuthenticated, async (req, res, next) => {
   try {
     res.status(200).json(req.payload);

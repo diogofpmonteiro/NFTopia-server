@@ -4,7 +4,7 @@ const User = require("../models/user.model");
 const { isAuthenticated } = require("./../middleware/jwt.middleware");
 const fileUploader = require("../config/cloudinary.config");
 
-// * GET /api/user/  - Get current user info - Tested successfully
+// * Get current user info
 router.get("/api/user/", isAuthenticated, async (req, res, next) => {
   try {
     // If the user is authenticated we can access the JWT payload via req.payload
@@ -18,7 +18,7 @@ router.get("/api/user/", isAuthenticated, async (req, res, next) => {
   }
 });
 
-// Get specific user id to compare
+// * Get specific user id to compare
 router.get("/user/:userId", isAuthenticated, async (req, res, next) => {
   try {
     const { userId } = req.params;
@@ -30,7 +30,7 @@ router.get("/user/:userId", isAuthenticated, async (req, res, next) => {
   }
 });
 
-// * PUT /api/user/  - Update the current user - Tested successfully
+// * Update the current user
 router.put("/api/user/", isAuthenticated, fileUploader.single("imageURL"), async (req, res, next) => {
   try {
     const currentUser = req.payload;

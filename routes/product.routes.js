@@ -6,7 +6,7 @@ const User = require("../models/user.model");
 const { isAuthenticated, isAdmin } = require("../middleware/jwt.middleware");
 const fileUploader = require("../config/cloudinary.config");
 
-// * Create Product - Tested successfully
+// * Create product
 router.post("/api/products", isAuthenticated, fileUploader.single("imageURL"), isAdmin, async (req, res, next) => {
   try {
     // Get data from request body
@@ -23,7 +23,7 @@ router.post("/api/products", isAuthenticated, fileUploader.single("imageURL"), i
   }
 });
 
-// * Get all Products - Tested successfully
+// * Get all products
 router.get("/api/products", async (req, res, next) => {
   try {
     const allProducts = await Product.find();
@@ -34,7 +34,7 @@ router.get("/api/products", async (req, res, next) => {
   }
 });
 
-// * Get a specific Product - when you click on any Product Card - Tested successfully
+// * Get a specific product
 router.get("/api/products/:productId", async (req, res, next) => {
   try {
     // Get Product id from the URL
@@ -55,7 +55,7 @@ router.get("/api/products/:productId", async (req, res, next) => {
   }
 });
 
-// Edit a Product (admin only)
+// * Edit a product
 router.put("/api/products/:productId", isAuthenticated, fileUploader.single("imageURL"), isAdmin, async (req, res, next) => {
   try {
     const { productId } = req.params;
@@ -73,13 +73,13 @@ router.put("/api/products/:productId", isAuthenticated, fileUploader.single("ima
 
     const updatedProduct = await Product.findByIdAndUpdate(productId, newProductInfo, { new: true });
 
-    res.status(200).json(updatedProduct);
+    res.status(201).json(updatedProduct);
   } catch (error) {
     next(error);
   }
 });
 
-// * Delete a product (admin only) - Tested successfully
+// * Delete a product
 router.delete("/api/products/:productId", isAuthenticated, isAdmin, async (req, res, next) => {
   try {
     const { productId } = req.params;
@@ -97,7 +97,7 @@ router.delete("/api/products/:productId", isAuthenticated, isAdmin, async (req, 
   }
 });
 
-// Add favorite
+// * Add to favorites
 router.post("/add-favorite/:productId", async (req, res) => {
   try {
     const { productId } = req.params;
@@ -107,11 +107,11 @@ router.post("/add-favorite/:productId", async (req, res) => {
 
     res.status(201).json(updatedUser);
   } catch (error) {
-    console.log(error);
+    res.status(404).json(error);
   }
 });
 
-// Remove favorite
+// * Remove from favorites
 router.post("/remove-favorite/:productId", async (req, res) => {
   try {
     const { productId } = req.params;
@@ -119,9 +119,9 @@ router.post("/remove-favorite/:productId", async (req, res) => {
 
     const updatedUser = await User.findByIdAndUpdate(theUserId, { $pull: { favoriteProducts: productId } }, { new: true });
 
-    res.status(201).json(updatedUser);
+    res.status(204).json(updatedUser);
   } catch (error) {
-    console.log(error);
+    res.status(500).json(error);
   }
 });
 
