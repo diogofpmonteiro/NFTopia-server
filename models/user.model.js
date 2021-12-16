@@ -7,7 +7,7 @@ const userSchema = new Schema({
   username: { type: String, unique: true, required: true },
   password: { type: String, required: true },
   profilePictureURL: { type: String, default: defaultProfilePictureUrl },
-  cart: { type: Schema.Types.ObjectId, ref: "Cart" },
+  favoriteProducts: [{ type: Schema.Types.ObjectId, ref: "Product" }],
   role: { type: String, enum: ["admin", "user"], default: "admin" },
 });
 

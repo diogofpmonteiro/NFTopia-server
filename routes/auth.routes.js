@@ -54,7 +54,7 @@ router.post("/auth/signup", fileUploader.single("imageURL"), async (req, res, ne
       _id: createdUser._id,
       username: createdUser.username,
       profilePictureURL: createdUser.profilePictureURL,
-      cart: createdUser.cart,
+      favoriteProducts: createdUser.favoriteProducts,
       role: createdUser.role,
     };
 
@@ -94,7 +94,7 @@ router.post("/auth/login", async (req, res, next) => {
         _id: foundUser._id,
         username: foundUser.username,
         profilePictureURL: foundUser.profilePictureURL,
-        cart: foundUser.cart,
+        favoriteProducts: foundUser.favoriteProducts,
         role: foundUser.role,
       };
 
@@ -108,7 +108,7 @@ router.post("/auth/login", async (req, res, next) => {
       // Send the response
       res.status(200).json({ authToken: authToken });
     } else if (!passwordCorrect) {
-      res.status(401).json({ message: "Unable to login the user" }); // Unathorized
+      res.status(401).json({ message: "Unable to login the user" });
     }
   } catch (error) {
     next(error);
@@ -118,11 +118,6 @@ router.post("/auth/login", async (req, res, next) => {
 // * GET /auth/verify  - Verify tokens stored in the frontend - Tested successfully
 router.get("/auth/verify", isAuthenticated, async (req, res, next) => {
   try {
-    // If JWT is valid the payload gets decoded by isAuthenticated middleware
-    // and made available on req.payload
-
-    // Send back the object with the user data
-    // previously saved as the token payload
     res.status(200).json(req.payload);
   } catch (error) {
     next(error);

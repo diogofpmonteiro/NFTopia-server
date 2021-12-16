@@ -10,7 +10,7 @@ router.get("/api/user/", isAuthenticated, async (req, res, next) => {
     // If the user is authenticated we can access the JWT payload via req.payload
     // req.payload holds the user info that was encoded in JWT during login.
     const currentUser = req.payload;
-    const user = await User.findById(currentUser._id);
+    const user = await User.findById(currentUser._id).populate("favoriteProducts");
 
     res.status(200).json(user);
   } catch (error) {
@@ -34,7 +34,6 @@ router.get("/user/:userId", isAuthenticated, async (req, res, next) => {
 router.put("/api/user/", isAuthenticated, fileUploader.single("imageURL"), async (req, res, next) => {
   try {
     const currentUser = req.payload;
-    // "existingImage" has to be the same name as the input name on the client
     const { username, profilePictureURL } = req.body;
 
     let newProfilePictureURL;

@@ -2,6 +2,7 @@ const express = require("express");
 const mongoose = require("mongoose");
 const router = express.Router();
 const Product = require("../models/product.model");
+const User = require("../models/user.model");
 const { isAuthenticated, isAdmin } = require("../middleware/jwt.middleware");
 const fileUploader = require("../config/cloudinary.config");
 
@@ -92,6 +93,34 @@ router.delete("/api/products/:productId", isAuthenticated, isAdmin, async (req, 
     res.status(204).send(); // No Content
   } catch (error) {
     res.status(500).json(error);
+  }
+});
+
+// Add favorite
+router.post("/add-favorite/:productId", async (req, res) => {
+  try {
+    const { productId } = req.params;
+    const { theUserId } = req.body;
+
+    const updatedUser = await User.findByIdAndUpdate(theUserId, { $push: { favoriteProducts: productId } }, { new: true });
+
+    res.status(201).json(updatedUser);
+  } catch (error) {
+    console.log(error);
+  }
+});
+
+// Remove favorite
+router.post("/remove-favorite/:productId", async (req, res) => {
+  try {
+    const { productId } = req.params;
+    const { theUserId } = req.body;
+
+    const updatedUser = await User.findByIdAndUpdate(theUserId, { $pull: { favoriteProducts: productId } }, { new: true });
+
+    res.status(201).json(updatedUser);
+  } catch (error) {
+    console.log(error);
   }
 });
 
